@@ -4,35 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>キャッシュバック抽選</title>
+    <!-- Google FontsのRobotoを使用 -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { 
-            font-family: Arial, sans-serif; 
+            font-family: 'Roboto', sans-serif; 
             text-align: center; 
             padding: 20px; 
-            background: #8B0000; 
+            background: #2c2c2c; 
             color: #FFD700; 
         }
         h2 { 
             color: #FFD700; 
-            text-shadow: 2px 2px 4px black; 
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6); 
+            margin-bottom: 20px;
         }
         #entryList { 
             margin-bottom: 20px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .entry { 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             margin-bottom: 10px; 
+            width: 100%;
+            max-width: 400px;
         }
         input { 
-            width: 40%; 
+            width: 45%; 
             padding: 10px; 
             margin: 5px; 
             font-size: 16px; 
-            border: 2px solid gold; 
-            background: #FFFAF0; 
+            border: 1px solid #FFD700; 
+            background: #3c3c3c; 
+            color: #FFD700;
             border-radius: 5px;
+            outline: none;
+            transition: border 0.3s;
+        }
+        input:focus {
+            border: 2px solid #FFA500;
         }
         button { 
             padding: 12px 20px; 
@@ -40,36 +54,56 @@
             cursor: pointer; 
             margin: 5px; 
             border-radius: 5px; 
-            background: #B22222; 
-            color: white; 
-            border: 2px solid gold; 
+            background: #FFD700; 
+            color: #2c2c2c; 
+            border: none; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: background 0.3s, transform 0.2s;
             width: 90%; 
             max-width: 300px;
         }
         button:hover { 
-            background: #A52A2A; 
+            background: #FFA500; 
+            transform: translateY(-2px);
         }
         #probabilityTable { 
-            width: 80%; 
-            margin: auto; 
+            width: 100%; 
+            max-width: 600px; 
+            margin: 20px auto; 
             border-collapse: collapse; 
-            background: #660000; 
-            color: white; 
+            background: #3c3c3c; 
+            color: #FFD700; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: opacity 0.5s;
         }
         #probabilityTable th, #probabilityTable td { 
-            padding: 10px; 
-            border: 1px solid gold; 
+            padding: 12px 20px; 
+            border-bottom: 1px solid #FFD700; 
+        }
+        #probabilityTable th { 
+            background: #444; 
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        #probabilityTable tr:last-child td { 
+            border-bottom: none; 
         }
         #slotContainer { 
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            height: 80px; 
+            height: 100px; 
             overflow: hidden; 
-            background: black; 
-            border: 5px solid gold; 
-            border-radius: 10px; 
-            margin-top: 20px; 
+            background: #000; 
+            border: 4px solid #FFD700; 
+            border-radius: 15px; 
+            margin: 30px auto; 
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            position: relative;
         }
         #slot { 
             font-size: 2em; 
@@ -83,14 +117,29 @@
         }
         /* スロットアニメーション用のスタイル */
         @keyframes spin {
-            from { transform: translateY(0); }
-            to { transform: translateY(-100%); }
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100%); }
+        }
+        @media (max-width: 600px) {
+            #probabilityTable {
+                width: 95%;
+            }
+            #slotContainer {
+                width: 95%;
+                height: 80px;
+            }
+            #slot {
+                font-size: 1.5em;
+            }
+            input {
+                width: 40%;
+            }
         }
     </style>
 </head>
 <body>
 
-    <h2>キャッシュバック抽選 </h2>
+    <h2>🎉 キャッシュバック抽選 🎉</h2>
     
     <div id="entryList"></div>
     <button onclick="addEntry()">+ 追加</button>
@@ -106,7 +155,9 @@
     
     <button id="drawButton" class="hidden" onclick="startDraw()">抽選開始</button>
     
-    <div id="slotContainer"><div id="slot"></div></div>
+    <div id="slotContainer">
+        <div id="slot">🎰</div>
+    </div>
     
     <button id="resetButton" class="hidden" onclick="resetAll()">リセット</button>
     <button id="editButton" class="hidden" onclick="editEntries()">修正</button>
@@ -234,12 +285,12 @@
                         slot.textContent = ` ${losingName2}`;
                         // Show winner after another 800ms
                         spinTimeouts.push(setTimeout(() => {
-                            slot.textContent = ` 当選者: ${finalWinner} `;
+                            slot.textContent = `🎉 当選者: ${finalWinner} 🎉`;
                         }, 800));
                     }, 800));
                 } else {
                     // 参加者が一人の場合、直接当選者を表示
-                    slot.textContent = ` 当選者: ${finalWinner} `;
+                    slot.textContent = `🎉 当選者: ${finalWinner} 🎉`;
                 }
             }, 3500));
         }
