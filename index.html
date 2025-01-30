@@ -90,7 +90,7 @@
 </head>
 <body>
 
-    <h2>🎉 キャッシュバック抽選 🎉</h2>
+    <h2>キャッシュバック抽選 </h2>
     
     <div id="entryList"></div>
     <button onclick="addEntry()">+ 追加</button>
@@ -106,7 +106,7 @@
     
     <button id="drawButton" class="hidden" onclick="startDraw()">抽選開始</button>
     
-    <div id="slotContainer"><div id="slot">🎰</div></div>
+    <div id="slotContainer"><div id="slot"></div></div>
     
     <button id="resetButton" class="hidden" onclick="resetAll()">リセット</button>
     <button id="editButton" class="hidden" onclick="editEntries()">修正</button>
@@ -228,18 +228,18 @@
                 if (losingPool.length > 0) {
                     let losingName1 = losingPool[Math.floor(Math.random() * losingPool.length)];
                     let losingName2 = losingPool[Math.floor(Math.random() * losingPool.length)];
-                    slot.textContent = `🎰 ${losingName1}`;
+                    slot.textContent = ` ${losingName1}`;
                     // Show second losing name after 800ms
                     spinTimeouts.push(setTimeout(() => {
-                        slot.textContent = `🎰 ${losingName2}`;
+                        slot.textContent = ` ${losingName2}`;
                         // Show winner after another 800ms
                         spinTimeouts.push(setTimeout(() => {
-                            slot.textContent = `🎉 当選者: ${finalWinner} 🎉`;
+                            slot.textContent = ` 当選者: ${finalWinner} `;
                         }, 800));
                     }, 800));
                 } else {
                     // 参加者が一人の場合、直接当選者を表示
-                    slot.textContent = `🎉 当選者: ${finalWinner} 🎉`;
+                    slot.textContent = ` 当選者: ${finalWinner} `;
                 }
             }, 3500));
         }
@@ -255,7 +255,7 @@
             entryList.innerHTML = "";
             probabilityList.innerHTML = "";
             probabilityTable.classList.add("hidden");
-            slot.textContent = "🎰";
+            slot.textContent = "";
             drawButton.classList.add("hidden");
             resetButton.classList.add("hidden");
             editButton.classList.add("hidden");
@@ -272,7 +272,7 @@
             drawButton.classList.add("hidden");
             editButton.classList.add("hidden");
             resetButton.classList.add("hidden");
-            slot.textContent = "🎰";
+            slot.textContent = "";
         }
     </script>
 
