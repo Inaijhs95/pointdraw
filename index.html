@@ -14,15 +14,10 @@
         button:hover { background: #A52A2A; }
         #probabilityTable { width: 80%; margin: auto; border-collapse: collapse; background: #660000; color: white; }
         #probabilityTable th, #probabilityTable td { padding: 10px; border: 1px solid gold; }
-        #slotContainer { display: flex; justify-content: center; align-items: center; height: 100px; overflow: hidden; background: black; border: 5px solid gold; border-radius: 10px; margin-top: 20px; }
-        #slot { font-size: 2em; font-weight: bold; white-space: nowrap; animation: none; color: #FFD700; }
+        #slotContainer { display: flex; justify-content: center; align-items: center; height: 80px; overflow: hidden; background: black; border: 5px solid gold; border-radius: 10px; margin-top: 20px; }
+        #slot { font-size: 2em; font-weight: bold; white-space: nowrap; color: #FFD700; }
         .hidden { display: none; }
         #drawButton, #resetButton, #editButton { width: 90%; max-width: 300px; }
-        
-        @keyframes spin {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-100%); }
-        }
     </style>
 </head>
 <body>
@@ -58,7 +53,6 @@
         const slot = document.getElementById("slot");
         let participants = [];
 
-        // ローカルストレージからデータ復元
         window.onload = function() {
             let storedData = JSON.parse(localStorage.getItem("participants"));
             if (storedData) {
@@ -123,17 +117,21 @@
 
             let finalWinner = weightedPool[Math.floor(Math.random() * weightedPool.length)];
             let spinText = "";
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 100; i++) {
                 spinText += weightedPool[Math.floor(Math.random() * weightedPool.length)] + " | ";
             }
-            spinText += finalWinner;
-
-            slot.style.animation = "spin 2s linear infinite";
             slot.textContent = spinText;
 
+            let intervalSpeed = 50;
+            let slowdownInterval = setInterval(() => {
+                intervalSpeed += 20;
+                slot.scrollLeft += intervalSpeed;
+            }, 200);
+
             setTimeout(() => {
-                slot.style.animation = "none";
+                clearInterval(slowdownInterval);
                 slot.textContent = `🎰 ${finalWinner}`;
+
                 setTimeout(() => {
                     slot.textContent = `🎉 当選者: ${finalWinner} 🎉`;
                 }, 800);
