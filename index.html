@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>キャッシュバック抽選</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
         #entryList { margin-bottom: 20px; }
-        .entry { margin: 5px; display: flex; justify-content: center; align-items: center; }
-        input { margin: 5px; padding: 5px; }
-        button { margin: 5px; padding: 10px; cursor: pointer; }
-        #result { font-size: 1.5em; font-weight: bold; margin-top: 20px; }
+        .entry { display: flex; justify-content: center; align-items: center; margin-bottom: 10px; }
+        input { width: 40%; padding: 10px; margin: 5px; font-size: 16px; }
+        button { padding: 12px 20px; font-size: 18px; cursor: pointer; margin: 5px; border-radius: 5px; }
+        #probabilityTable { width: 80%; margin: auto; border-collapse: collapse; }
+        #probabilityTable th, #probabilityTable td { padding: 10px; border: 1px solid #ddd; }
+        #slot { font-size: 2em; font-weight: bold; margin-top: 20px; min-height: 50px; }
         .hidden { display: none; }
+        #drawButton, #resetButton, #editButton { width: 90%; max-width: 300px; }
     </style>
 </head>
 <body>
@@ -19,24 +22,32 @@
     <h2>キャッシュバック抽選</h2>
     
     <div id="entryList"></div>
-    <button onclick="addEntry()">+追加</button>
+    <button onclick="addEntry()">+ 追加</button>
     <button onclick="confirmEntries()">確定</button>
     
     <h3>当選確率</h3>
-    <div id="probabilityList"></div>
+    <table id="probabilityTable" class="hidden">
+        <thead>
+            <tr><th>名前</th><th>確率 (%)</th></tr>
+        </thead>
+        <tbody id="probabilityList"></tbody>
+    </table>
     
     <button id="drawButton" class="hidden" onclick="startDraw()">抽選開始</button>
     
-    <div id="result"></div>
+    <div id="slot">🎰</div>
     
-    <button id="resetButton" onclick="resetAll()">リセット</button>
+    <button id="resetButton" class="hidden" onclick="resetAll()">リセット</button>
     <button id="editButton" class="hidden" onclick="editEntries()">修正</button>
 
     <script>
         const entryList = document.getElementById("entryList");
+        const probabilityTable = document.getElementById("probabilityTable");
         const probabilityList = document.getElementById("probabilityList");
         const drawButton = document.getElementById("drawButton");
+        const resetButton = document.getElementById("resetButton");
         const editButton = document.getElementById("editButton");
+        const slot = document.getElementById("slot");
         let participants = [];
 
         // ローカルストレージからデータ復元
@@ -86,10 +97,12 @@
         function displayProbabilities() {
             let totalPoints = participants.reduce((sum, p) => sum + p.points, 0);
             probabilityList.innerHTML = participants.map(p => 
-                `${p.name}: ${(p.points / totalPoints * 100).toFixed(1)}%`
-            ).join("<br>");
+                `<tr><td>${p.name}</td><td>${(p.points / totalPoints * 100).toFixed(1)}%</td></tr>`
+            ).join("");
+            probabilityTable.classList.remove("hidden");
             drawButton.classList.remove("hidden");
             editButton.classList.remove("hidden");
+            resetButton.classList.remove("hidden");
         }
 
         function startDraw() {
@@ -100,17 +113,32 @@
                 }
             });
 
-            let resultDiv = document.getElementById("result");
+            let intervalSpeed = 100;
+            let slowdownPoint = 2000; 
+            let stopPoint = 3500;
+            let finalWinner = weightedPool[Math.floor(Math.random() * weightedPool.length)];
             let shuffleInterval = setInterval(() => {
                 let randomName = weightedPool[Math.floor(Math.random() * weightedPool.length)];
-                resultDiv.textContent = `🎰 ${randomName}`;
-            }, 50);
+                slot.textContent = `🎰 ${randomName}`;
+            }, intervalSpeed);
 
             setTimeout(() => {
                 clearInterval(shuffleInterval);
-                let winner = weightedPool[Math.floor(Math.random() * weightedPool.length)];
-                resultDiv.textContent = `🎉 当選者: ${winner} 🎉`;
-            }, 2000);
+                let slowdownInterval = setInterval(() => {
+                    let randomName = weightedPool[Math.floor(Math.random() * weightedPool.length)];
+                    slot.textContent = `🎰 ${randomName}`;
+                }, intervalSpeed += 50);
+                
+                setTimeout(() => {
+                    clearInterval(slowdownInterval);
+                    slot.textContent = `🎰 ${finalWinner}`;
+                    
+                    setTimeout(() => {
+                        slot.textContent = `🎉 当選者: ${finalWinner} 🎉`;
+                    }, 800);
+                    
+                }, 1500);
+            }, slowdownPoint);
         }
 
         function resetAll() {
@@ -118,16 +146,19 @@
             participants = [];
             entryList.innerHTML = "";
             probabilityList.innerHTML = "";
-            document.getElementById("result").textContent = "";
+            probabilityTable.classList.add("hidden");
+            slot.textContent = "🎰";
             drawButton.classList.add("hidden");
+            resetButton.classList.add("hidden");
             editButton.classList.add("hidden");
             addEntry();
         }
 
         function editEntries() {
-            probabilityList.innerHTML = "";
+            probabilityTable.classList.add("hidden");
             drawButton.classList.add("hidden");
             editButton.classList.add("hidden");
+            resetButton.classList.add("hidden");
         }
     </script>
 
