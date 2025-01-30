@@ -22,7 +22,7 @@
 </head>
 <body>
 
-    <h2>🎉 キャッシュバック抽選 🎉</h2>
+    <h2>キャッシュバック抽選</h2>
     
     <div id="entryList"></div>
     <button onclick="addEntry()">+ 追加</button>
@@ -38,7 +38,7 @@
     
     <button id="drawButton" class="hidden" onclick="startDraw()">抽選開始</button>
     
-    <div id="slotContainer"><div id="slot">🎰</div></div>
+    <div id="slotContainer"><div id="slot"></div></div>
     
     <button id="resetButton" class="hidden" onclick="resetAll()">リセット</button>
     <button id="editButton" class="hidden" onclick="editEntries()">修正</button>
@@ -130,10 +130,10 @@
 
             setTimeout(() => {
                 clearInterval(slowdownInterval);
-                slot.textContent = `🎰 ${finalWinner}`;
+                slot.textContent = ` ${finalWinner}`;
 
                 setTimeout(() => {
-                    slot.textContent = `🎉 当選者: ${finalWinner} 🎉`;
+                    slot.textContent = `当選者: ${finalWinner} `;
                 }, 800);
             }, 3000);
         }
@@ -144,7 +144,7 @@
             entryList.innerHTML = "";
             probabilityList.innerHTML = "";
             probabilityTable.classList.add("hidden");
-            slot.textContent = "🎰";
+            slot.textContent = "";
             drawButton.classList.add("hidden");
             resetButton.classList.add("hidden");
             editButton.classList.add("hidden");
