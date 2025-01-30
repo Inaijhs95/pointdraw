@@ -12,10 +12,10 @@
             text-align: center; 
             padding: 20px; 
             background: #2c2c2c; 
-            color: #FFD700; 
+            color: #C0C0C0; 
         }
         h2 { 
-            color: #FFD700; 
+            color: #C0C0C0; 
             text-shadow: 1px 1px 3px rgba(0,0,0,0.6); 
             margin-bottom: 20px;
         }
@@ -38,15 +38,15 @@
             padding: 10px; 
             margin: 5px; 
             font-size: 16px; 
-            border: 1px solid #FFD700; 
+            border: 1px solid #C0C0C0; 
             background: #3c3c3c; 
-            color: #FFD700;
+            color: #C0C0C0;
             border-radius: 5px;
             outline: none;
             transition: border 0.3s;
         }
         input:focus {
-            border: 2px solid #FFA500;
+            border: 2px solid #A9A9A9;
         }
         button { 
             padding: 12px 20px; 
@@ -54,7 +54,7 @@
             cursor: pointer; 
             margin: 5px; 
             border-radius: 5px; 
-            background: #FFD700; 
+            background: #C0C0C0; 
             color: #2c2c2c; 
             border: none; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
@@ -63,7 +63,7 @@
             max-width: 300px;
         }
         button:hover { 
-            background: #FFA500; 
+            background: #A9A9A9; 
             transform: translateY(-2px);
         }
         #probabilityTable { 
@@ -72,7 +72,7 @@
             margin: 20px auto; 
             border-collapse: collapse; 
             background: #3c3c3c; 
-            color: #FFD700; 
+            color: #C0C0C0; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             border-radius: 10px;
             overflow: hidden;
@@ -80,7 +80,7 @@
         }
         #probabilityTable th, #probabilityTable td { 
             padding: 12px 20px; 
-            border-bottom: 1px solid #FFD700; 
+            border-bottom: 1px solid #C0C0C0; 
         }
         #probabilityTable th { 
             background: #444; 
@@ -97,7 +97,7 @@
             height: 100px; 
             overflow: hidden; 
             background: #000; 
-            border: 4px solid #FFD700; 
+            border: 4px solid #C0C0C0; 
             border-radius: 15px; 
             margin: 30px auto; 
             width: 80%;
@@ -109,7 +109,7 @@
             font-size: 2em; 
             font-weight: bold; 
             white-space: nowrap; 
-            color: #FFD700; 
+            color: #C0C0C0; 
             transition: all 0.5s ease-in-out;
         }
         .hidden { 
@@ -117,8 +117,8 @@
         }
         /* スロットアニメーション用のスタイル */
         @keyframes spin {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-100%); }
+            from { transform: translateY(0); }
+            to { transform: translateY(-100%); }
         }
         @media (max-width: 600px) {
             #probabilityTable {
@@ -139,7 +139,7 @@
 </head>
 <body>
 
-    <h2>🎉 キャッシュバック抽選 🎉</h2>
+    <h2>キャッシュバック抽選</h2>
     
     <div id="entryList"></div>
     <button onclick="addEntry()">+ 追加</button>
@@ -156,7 +156,7 @@
     <button id="drawButton" class="hidden" onclick="startDraw()">抽選開始</button>
     
     <div id="slotContainer">
-        <div id="slot">🎰</div>
+        <div id="slot">スロット開始</div>
     </div>
     
     <button id="resetButton" class="hidden" onclick="resetAll()">リセット</button>
@@ -279,18 +279,18 @@
                 if (losingPool.length > 0) {
                     let losingName1 = losingPool[Math.floor(Math.random() * losingPool.length)];
                     let losingName2 = losingPool[Math.floor(Math.random() * losingPool.length)];
-                    slot.textContent = ` ${losingName1}`;
+                    slot.textContent = `外れ: ${losingName1}`;
                     // Show second losing name after 800ms
                     spinTimeouts.push(setTimeout(() => {
-                        slot.textContent = ` ${losingName2}`;
+                        slot.textContent = `外れ: ${losingName2}`;
                         // Show winner after another 800ms
                         spinTimeouts.push(setTimeout(() => {
-                            slot.textContent = `🎉 当選者: ${finalWinner} 🎉`;
+                            slot.textContent = `当選者: ${finalWinner}`;
                         }, 800));
                     }, 800));
                 } else {
                     // 参加者が一人の場合、直接当選者を表示
-                    slot.textContent = `🎉 当選者: ${finalWinner} 🎉`;
+                    slot.textContent = `当選者: ${finalWinner}`;
                 }
             }, 3500));
         }
@@ -306,7 +306,7 @@
             entryList.innerHTML = "";
             probabilityList.innerHTML = "";
             probabilityTable.classList.add("hidden");
-            slot.textContent = "";
+            slot.textContent = "スロット開始";
             drawButton.classList.add("hidden");
             resetButton.classList.add("hidden");
             editButton.classList.add("hidden");
@@ -323,7 +323,7 @@
             drawButton.classList.add("hidden");
             editButton.classList.add("hidden");
             resetButton.classList.add("hidden");
-            slot.textContent = "";
+            slot.textContent = "スロット開始";
         }
     </script>
 
