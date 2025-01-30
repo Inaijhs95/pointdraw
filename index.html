@@ -224,12 +224,23 @@
             // 3. フェイクストップ（3.5秒後）
             spinTimeouts.push(setTimeout(() => {
                 clearInterval(spinInterval);
-                slot.textContent = "🎰 ちょっと待って...";
-                // 短時間フェイント停止
-                spinTimeouts.push(setTimeout(() => {
-                    // 4. 完全停止（4.3秒後）
+                let losingPool = weightedPool.filter(name => name !== finalWinner);
+                if (losingPool.length > 0) {
+                    let losingName1 = losingPool[Math.floor(Math.random() * losingPool.length)];
+                    let losingName2 = losingPool[Math.floor(Math.random() * losingPool.length)];
+                    slot.textContent = `🎰 ${losingName1}`;
+                    // Show second losing name after 800ms
+                    spinTimeouts.push(setTimeout(() => {
+                        slot.textContent = `🎰 ${losingName2}`;
+                        // Show winner after another 800ms
+                        spinTimeouts.push(setTimeout(() => {
+                            slot.textContent = `🎉 当選者: ${finalWinner} 🎉`;
+                        }, 800));
+                    }, 800));
+                } else {
+                    // 参加者が一人の場合、直接当選者を表示
                     slot.textContent = `🎉 当選者: ${finalWinner} 🎉`;
-                }, 800));
+                }
             }, 3500));
         }
 
