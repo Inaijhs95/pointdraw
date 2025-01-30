@@ -242,10 +242,20 @@
             // 色の適用
             let rows = probabilityList.getElementsByTagName("tr");
             if (rows.length > 0) {
-                // 最上位（確率が最も高い）を黄緑色
-                rows[0].getElementsByTagName("td")[1].style.color = "#9ACD32"; // YellowGreen
-                // 最下位（確率が最も低い）を赤色
-                rows[rows.length - 1].getElementsByTagName("td")[1].style.color = "#FF4500"; // OrangeRed
+                // 最上位確率の値を取得
+                let highestProb = parseFloat(rows[0].getElementsByTagName("td")[1].innerText);
+                // 最下位確率の値を取得
+                let lowestProb = parseFloat(rows[rows.length - 1].getElementsByTagName("td")[1].innerText);
+                // 各行をチェックし、色を適用
+                for (let i = 0; i < rows.length; i++) {
+                    let prob = parseFloat(rows[i].getElementsByTagName("td")[1].innerText);
+                    if (prob === highestProb) {
+                        rows[i].getElementsByTagName("td")[1].style.color = "#9ACD32"; // YellowGreen
+                    }
+                    if (prob === lowestProb) {
+                        rows[i].getElementsByTagName("td")[1].style.color = "#FF4500"; // OrangeRed
+                    }
+                }
             }
         }
 
