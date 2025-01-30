@@ -310,10 +310,10 @@
                 if (losingPool.length > 0) {
                     let losingName1 = losingPool[Math.floor(Math.random() * losingPool.length)];
                     let losingName2 = losingPool[Math.floor(Math.random() * losingPool.length)];
-                    slot.textContent = `外れ: ${losingName1}`;
+                    slot.textContent = ` ${losingName1}`;
                     // Show second losing name after 800ms
                     spinTimeouts.push(setTimeout(() => {
-                        slot.textContent = `外れ: ${losingName2}`;
+                        slot.textContent = ` ${losingName2}`;
                         // Show winner after another 800ms
                         spinTimeouts.push(setTimeout(() => {
                             slot.textContent = `当選者: ${finalWinner}`;
