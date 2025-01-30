@@ -5,21 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>キャッシュバック抽選</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #8B0000; color: #FFD700; }
+        h2 { color: #FFD700; text-shadow: 2px 2px 4px black; }
         #entryList { margin-bottom: 20px; }
         .entry { display: flex; justify-content: center; align-items: center; margin-bottom: 10px; }
-        input { width: 40%; padding: 10px; margin: 5px; font-size: 16px; }
-        button { padding: 12px 20px; font-size: 18px; cursor: pointer; margin: 5px; border-radius: 5px; }
-        #probabilityTable { width: 80%; margin: auto; border-collapse: collapse; }
-        #probabilityTable th, #probabilityTable td { padding: 10px; border: 1px solid #ddd; }
-        #slot { font-size: 2em; font-weight: bold; margin-top: 20px; min-height: 50px; }
+        input { width: 40%; padding: 10px; margin: 5px; font-size: 16px; border: 2px solid gold; background: #FFFAF0; }
+        button { padding: 12px 20px; font-size: 18px; cursor: pointer; margin: 5px; border-radius: 5px; background: #B22222; color: white; border: 2px solid gold; }
+        button:hover { background: #A52A2A; }
+        #probabilityTable { width: 80%; margin: auto; border-collapse: collapse; background: #660000; color: white; }
+        #probabilityTable th, #probabilityTable td { padding: 10px; border: 1px solid gold; }
+        #slotContainer { display: flex; justify-content: center; align-items: center; height: 100px; overflow: hidden; background: black; border: 5px solid gold; border-radius: 10px; margin-top: 20px; }
+        #slot { font-size: 2em; font-weight: bold; white-space: nowrap; animation: none; color: #FFD700; }
         .hidden { display: none; }
         #drawButton, #resetButton, #editButton { width: 90%; max-width: 300px; }
+        
+        @keyframes spin {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100%); }
+        }
     </style>
 </head>
 <body>
 
-    <h2>キャッシュバック抽選</h2>
+    <h2>🎉 キャッシュバック抽選 🎉</h2>
     
     <div id="entryList"></div>
     <button onclick="addEntry()">+ 追加</button>
@@ -35,7 +43,7 @@
     
     <button id="drawButton" class="hidden" onclick="startDraw()">抽選開始</button>
     
-    <div id="slot">🎰</div>
+    <div id="slotContainer"><div id="slot">🎰</div></div>
     
     <button id="resetButton" class="hidden" onclick="resetAll()">リセット</button>
     <button id="editButton" class="hidden" onclick="editEntries()">修正</button>
@@ -113,32 +121,23 @@
                 }
             });
 
-            let intervalSpeed = 100;
-            let slowdownPoint = 2000; 
-            let stopPoint = 3500;
             let finalWinner = weightedPool[Math.floor(Math.random() * weightedPool.length)];
-            let shuffleInterval = setInterval(() => {
-                let randomName = weightedPool[Math.floor(Math.random() * weightedPool.length)];
-                slot.textContent = `🎰 ${randomName}`;
-            }, intervalSpeed);
+            let spinText = "";
+            for (let i = 0; i < 50; i++) {
+                spinText += weightedPool[Math.floor(Math.random() * weightedPool.length)] + " | ";
+            }
+            spinText += finalWinner;
+
+            slot.style.animation = "spin 2s linear infinite";
+            slot.textContent = spinText;
 
             setTimeout(() => {
-                clearInterval(shuffleInterval);
-                let slowdownInterval = setInterval(() => {
-                    let randomName = weightedPool[Math.floor(Math.random() * weightedPool.length)];
-                    slot.textContent = `🎰 ${randomName}`;
-                }, intervalSpeed += 50);
-                
+                slot.style.animation = "none";
+                slot.textContent = `🎰 ${finalWinner}`;
                 setTimeout(() => {
-                    clearInterval(slowdownInterval);
-                    slot.textContent = `🎰 ${finalWinner}`;
-                    
-                    setTimeout(() => {
-                        slot.textContent = `🎉 当選者: ${finalWinner} 🎉`;
-                    }, 800);
-                    
-                }, 1500);
-            }, slowdownPoint);
+                    slot.textContent = `🎉 当選者: ${finalWinner} 🎉`;
+                }, 800);
+            }, 3000);
         }
 
         function resetAll() {
