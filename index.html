@@ -120,6 +120,17 @@
             from { transform: translateY(0); }
             to { transform: translateY(-100%); }
         }
+        /* 点滅アニメーション */
+        @keyframes blink {
+            0% { opacity: 1; color: #FFD700; }
+            25% { opacity: 0; color: #FFD700; }
+            50% { opacity: 1; color: #FFD700; }
+            75% { opacity: 0; color: #FFD700; }
+            100% { opacity: 1; color: #FFD700; }
+        }
+        .blink {
+            animation: blink 0.6s linear 2;
+        }
         @media (max-width: 600px) {
             #probabilityTable {
                 width: 95%;
@@ -156,7 +167,7 @@
     <button id="drawButton" class="hidden" onclick="startDraw()">抽選開始</button>
     
     <div id="slotContainer">
-        <div id="slot">当選者:?????</div>
+        <div id="slot">当選者: ?????</div>
     </div>
     
     <button id="resetButton" class="hidden" onclick="resetAll()">リセット</button>
@@ -219,6 +230,8 @@
 
         function displayProbabilities() {
             let totalPoints = participants.reduce((sum, p) => sum + p.points, 0);
+            // ソート：確率の高い順
+            participants.sort((a, b) => (b.points / totalPoints) - (a.points / totalPoints));
             probabilityList.innerHTML = participants.map(p => 
                 `<tr><td>${p.name}</td><td>${(p.points / totalPoints * 100).toFixed(1)}%</td></tr>`
             ).join("");
@@ -226,6 +239,14 @@
             drawButton.classList.remove("hidden");
             editButton.classList.remove("hidden");
             resetButton.classList.remove("hidden");
+            // 色の適用
+            let rows = probabilityList.getElementsByTagName("tr");
+            if (rows.length > 0) {
+                // 最上位（確率が最も高い）を黄緑色
+                rows[0].getElementsByTagName("td")[1].style.color = "#9ACD32"; // YellowGreen
+                // 最下位（確率が最も低い）を赤色
+                rows[rows.length - 1].getElementsByTagName("td")[1].style.color = "#FF4500"; // OrangeRed
+            }
         }
 
         function startDraw() {
@@ -279,18 +300,30 @@
                 if (losingPool.length > 0) {
                     let losingName1 = losingPool[Math.floor(Math.random() * losingPool.length)];
                     let losingName2 = losingPool[Math.floor(Math.random() * losingPool.length)];
-                    slot.textContent = `当選者: ${losingName1}`;
+                    slot.textContent = `外れ: ${losingName1}`;
                     // Show second losing name after 800ms
                     spinTimeouts.push(setTimeout(() => {
-                        slot.textContent = `当選者: ${losingName2}`;
+                        slot.textContent = `外れ: ${losingName2}`;
                         // Show winner after another 800ms
                         spinTimeouts.push(setTimeout(() => {
                             slot.textContent = `当選者: ${finalWinner}`;
+                            // 点滅効果を追加
+                            slot.classList.add("blink");
+                            // アニメーションが完了したらクラスを削除
+                            setTimeout(() => {
+                                slot.classList.remove("blink");
+                            }, 1200); // 0.6s * 2回
                         }, 800));
                     }, 800));
                 } else {
                     // 参加者が一人の場合、直接当選者を表示
                     slot.textContent = `当選者: ${finalWinner}`;
+                    // 点滅効果を追加
+                    slot.classList.add("blink");
+                    // アニメーションが完了したらクラスを削除
+                    setTimeout(() => {
+                        slot.classList.remove("blink");
+                    }, 1200); // 0.6s * 2回
                 }
             }, 3500));
         }
@@ -306,7 +339,7 @@
             entryList.innerHTML = "";
             probabilityList.innerHTML = "";
             probabilityTable.classList.add("hidden");
-            slot.textContent = "スロット開始";
+            slot.textContent = "当選者: ?????";
             drawButton.classList.add("hidden");
             resetButton.classList.add("hidden");
             editButton.classList.add("hidden");
@@ -323,7 +356,7 @@
             drawButton.classList.add("hidden");
             editButton.classList.add("hidden");
             resetButton.classList.add("hidden");
-            slot.textContent = "スロット開始";
+            slot.textContent = "当選者: ?????";
         }
     </script>
 
