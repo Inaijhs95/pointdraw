@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>キャッシュバック抽選</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #entryList { margin-bottom: 20px; }
+        .entry { margin: 5px; display: flex; justify-content: center; align-items: center; }
+        input { margin: 5px; padding: 5px; }
+        button { margin: 5px; padding: 10px; cursor: pointer; }
+        #result { font-size: 1.5em; font-weight: bold; margin-top: 20px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <h2>キャッシュバック抽選</h2>
+    
+    <div id="entryList"></div>
+    <button onclick="addEntry()">+追加</button>
+    <button onclick="confirmEntries()">確定</button>
+    
+    <h3>当選確率</h3>
+    <div id="probabilityList"></div>
+    
+    <button id="drawButton" class="hidden" onclick="startDraw()">抽選開始</button>
+    
+    <div id="result"></div>
+    
+    <button id="resetButton" onclick="resetAll()">リセット</button>
+    <button id="editButton" class="hidden" onclick="editEntries()">修正</button>
+
+    <script>
+        const entryList = document.getElementById("entryList");
+        const probabilityList = document.getElementById("probabilityList");
+        const drawButton = document.getElementById("drawButton");
+        const editButton = document.getElementById("editButton");
+        let participants = [];
+
+        // ローカルストレージからデータ復元
+        window.onload = function() {
+            let storedData = JSON.parse(localStorage.getItem("participants"));
+            if (storedData) {
+                participants = storedData;
+                updateEntryFields();
+            } else {
+                addEntry();
+            }
+        };
+
+        function addEntry(name = "", points = 1) {
+            let div = document.createElement("div");
+            div.className = "entry";
+            div.innerHTML = `
+                <input type="text" placeholder="名前" value="${name}">
+                <input type="number" min="1" max="20" value="${points}">
+            `;
+            entryList.appendChild(div);
+        }
+
+        function updateEntryFields() {
+            entryList.innerHTML = "";
+            participants.forEach(p => addEntry(p.name, p.points));
+        }
+
+        function confirmEntries() {
+            participants = [];
+            let inputs = entryList.getElementsByClassName("entry");
+            for (let i = 0; i < inputs.length; i++) {
+                let name = inputs[i].children[0].value.trim();
+                let points = parseInt(inputs[i].children[1].value);
+                if (name && points >= 1 && points <= 20) {
+                    participants.push({ name, points });
+                }
+            }
+            if (participants.length === 0) {
+                alert("少なくとも1名の参加者を入力してください。");
+                return;
+            }
+            localStorage.setItem("participants", JSON.stringify(participants));
+            displayProbabilities();
+        }
+
+        function displayProbabilities() {
+            let totalPoints = participants.reduce((sum, p) => sum + p.points, 0);
+            probabilityList.innerHTML = participants.map(p => 
+                `${p.name}: ${(p.points / totalPoints * 100).toFixed(1)}%`
+            ).join("<br>");
+            drawButton.classList.remove("hidden");
+            editButton.classList.remove("hidden");
+        }
+
+        function startDraw() {
+            let weightedPool = [];
+            participants.forEach(p => {
+                for (let i = 0; i < p.points; i++) {
+                    weightedPool.push(p.name);
+                }
+            });
+
+            let resultDiv = document.getElementById("result");
+            let shuffleInterval = setInterval(() => {
+                let randomName = weightedPool[Math.floor(Math.random() * weightedPool.length)];
+                resultDiv.textContent = `🎰 ${randomName}`;
+            }, 50);
+
+            setTimeout(() => {
+                clearInterval(shuffleInterval);
+                let winner = weightedPool[Math.floor(Math.random() * weightedPool.length)];
+                resultDiv.textContent = `🎉 当選者: ${winner} 🎉`;
+            }, 2000);
+        }
+
+        function resetAll() {
+            localStorage.removeItem("participants");
+            participants = [];
+            entryList.innerHTML = "";
+            probabilityList.innerHTML = "";
+            document.getElementById("result").textContent = "";
+            drawButton.classList.add("hidden");
+            editButton.classList.add("hidden");
+            addEntry();
+        }
+
+        function editEntries() {
+            probabilityList.innerHTML = "";
+            drawButton.classList.add("hidden");
+            editButton.classList.add("hidden");
+        }
+    </script>
+
+</body>
+</html>
