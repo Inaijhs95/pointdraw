@@ -156,7 +156,7 @@
     <button id="drawButton" class="hidden" onclick="startDraw()">抽選開始</button>
     
     <div id="slotContainer">
-        <div id="slot">スロット開始</div>
+        <div id="slot">当選者:?????</div>
     </div>
     
     <button id="resetButton" class="hidden" onclick="resetAll()">リセット</button>
@@ -279,10 +279,10 @@
                 if (losingPool.length > 0) {
                     let losingName1 = losingPool[Math.floor(Math.random() * losingPool.length)];
                     let losingName2 = losingPool[Math.floor(Math.random() * losingPool.length)];
-                    slot.textContent = `外れ: ${losingName1}`;
+                    slot.textContent = `当選者: ${losingName1}`;
                     // Show second losing name after 800ms
                     spinTimeouts.push(setTimeout(() => {
-                        slot.textContent = `外れ: ${losingName2}`;
+                        slot.textContent = `当選者: ${losingName2}`;
                         // Show winner after another 800ms
                         spinTimeouts.push(setTimeout(() => {
                             slot.textContent = `当選者: ${finalWinner}`;
